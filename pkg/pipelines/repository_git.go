@@ -29,7 +29,8 @@ func (s *RepositoryGit) getDefinitions() ([]Definition, error) {
 		_, err := git.PlainClone(s.workingDir, false, &git.CloneOptions{
 			URL:             s.URL,
 			InsecureSkipTLS: os.Getenv("GIT_SSL_NO_VERIFY") == "true",
-			Progress:        os.Stdout,
+			Depth:           1,
+			SingleBranch:    true,
 		})
 
 		if err != nil {
@@ -76,6 +77,12 @@ func (s *RepositoryGit) getDefinitions() ([]Definition, error) {
 		def.parsePipeline(dat)
 
 		ret = append(ret, def)
+	}
+
+	err := os.RemoveAll(s.workingDir)
+
+	if err != nil {
+		logrus.Fatal(err)
 	}
 
 	return ret, nil

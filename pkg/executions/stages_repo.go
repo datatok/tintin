@@ -65,13 +65,7 @@ type StagesStore struct {
 }
 
 func NewStagesStore(settings *cli.EnvSettings, scheduleTitle string) *StagesStore {
-	es, err := elasticsearch.NewClient(elasticsearch.Config{
-		Addresses: strings.Split(settings.MetricsLogAPIURL, ","),
-	})
-
-	if err != nil {
-		log.Fatalf("Error creating the client: %s", err)
-	}
+	es := getElasticsearchClient(settings)
 
 	return &StagesStore{
 		client:              es,

@@ -29,14 +29,23 @@ services:
     - "9090:9090"
 
   app:
+    #image: ghcr.io/datatok/tintin:main
     build: .
     environment:
     - AWS_REGION=us-east-1
-    - PIPELINES_BUCKET=steam
+    - TINTIN_PIPELINES_URL
+    - TINTIN_PIPELINES_PATH=src/pipelines
     - HTML_TEMPLATE=/opt/tintin/index.html
     - LOG_LEVEL=debug
     - FRONT_URLS_PATH=/urls.yaml
+    - GIT_SSL_NO_VERIFY=true
+    - METRICS_LOG_API_URL=https://djobi-metrics-es.prod-steam.c5.par1.kube.qwant.ninja/
     volumes:
     - ./urls.yaml:/urls.yaml:ro
+    - tmp:/tmp:rw
+    - ./_dist/linux-amd64/tintin:/usr/local/bin/tintin:ro
     ports:
     - 8080:8080
+
+volumes:
+  tmp:

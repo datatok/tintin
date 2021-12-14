@@ -2,9 +2,6 @@ package executions
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
-
 	"strings"
 
 	"github.com/elastic/go-elasticsearch/v7"
@@ -63,31 +60,18 @@ type JobsStore struct {
 }
 
 func GetServiceStatus(settings *cli.EnvSettings) string {
-	es, err := elasticsearch.NewClient(elasticsearch.Config{
-		Addresses: strings.Split(settings.MetricsLogAPIURL, ","),
-	})
-
-	if err != nil {
-		return fmt.Sprintf("nop, cannot connect to elasticsearch: %s", err)
-	}
-
+	es := getElasticsearchClient(settings)
 	i, err := es.Info()
 
-	if err != nil {
-		return fmt.Sprintf("nop, cannot connect to elasticsearch: %s", err)
+	if err == nil {
+		return i.String()
 	}
 
-	return fmt.Sprintf("ok: %s", i.String())
+	return "error: " + err.Error()
 }
 
 func NewJobsStore(settings *cli.EnvSettings, scheduleTitle string) *JobsStore {
-	es, err := elasticsearch.NewClient(elasticsearch.Config{
-		Addresses: strings.Split(settings.MetricsLogAPIURL, ","),
-	})
-
-	if err != nil {
-		log.Fatalf("Error creating the client: %s", err)
-	}
+	es := getElasticsearchClient(settings)
 
 	return &JobsStore{
 		client:              es,
