@@ -161,13 +161,3 @@ info:
 	 @echo "Git Tag:           ${GIT_TAG}"
 	 @echo "Git Commit:        ${GIT_COMMIT}"
 	 @echo "Git Tree State:    ${GIT_DIRTY}"
-
-.PHONY: validate-headers
-validate-headers: ## Check license header for all files
-	@docker build . --target check-license-headers
-
-.PHONY: validate-go-mod
-validate-go-mod: ## Validate go.mod and go.sum are up-to-date
-	@docker build . --target check-go-mod
-
-validate: validate-go-mod validate-headers ## Validate sources
