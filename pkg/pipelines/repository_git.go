@@ -41,6 +41,8 @@ func (s *RepositoryGit) getDefinitions() ([]Definition, error) {
 	searchPath := filepath.Join(s.workingDir, s.path)
 	workingDirSanitized := sanitizePath(searchPath)
 
+	logrus.Debug("Searching pipeline.yaml files")
+
 	filepath.Walk(searchPath, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			fmt.Println(err)
@@ -78,6 +80,8 @@ func (s *RepositoryGit) getDefinitions() ([]Definition, error) {
 
 		ret = append(ret, def)
 	}
+
+	logrus.Debugf("removing %s", s.workingDir)
 
 	err := os.RemoveAll(s.workingDir)
 
