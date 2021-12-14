@@ -4,10 +4,23 @@ on:
   push:
     branches:
       - main
+      - ci
     tags:
       - 'v*'
 
 jobs:
+  app-lint:
+    name: lint
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: "on"
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+
   app-test:
     name: test
     runs-on: ubuntu-latest
@@ -22,17 +35,13 @@ jobs:
       - name: Checkout code into the Go module directory
         uses: actions/checkout@v2
 
-      - name: Run golangci-lint
-        env:
-          BUILD_TAGS: e2e
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b /usr/bin/ v1.39.0
-          make test-unit
+      - name: Run unit tests
+        run: make test-unit
 
   app-build:
     name: Build app
     runs-on: ubuntu-latest
-    needs: app-test
+    needs: ["app-test", "app-lint"]
     
     env:
       GO111MODULE: "on"
@@ -115,3 +124,24 @@ jobs:
           build-args: |
             BUILDKIT_INLINE_CACHE=1
       
+  github-release:
+    name: Create github release
+    runs-on: ubuntu-latest
+    needs: docker-build
+    if: startsWith(github.ref, 'refs/tags')
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download dist artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: dist
+        path: _dist
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "_dist/*"
+        commit: main
+        body: |
+          ```
+          docker run -p 8080:8080 ghcr.io/datatok/tintin:${{github.ref_name}} server
+          ```
+        token: ${{ secrets.GITHUB_TOKEN }}    
