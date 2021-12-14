@@ -27,8 +27,9 @@ func (s *RepositoryGit) getDefinitions() ([]Definition, error) {
 		logrus.Debugf("Cloning repo into %s", s.workingDir)
 
 		_, err := git.PlainClone(s.workingDir, false, &git.CloneOptions{
-			URL:      s.URL,
-			Progress: os.Stdout,
+			URL:             s.URL,
+			InsecureSkipTLS: os.Getenv("GIT_SSL_NO_VERIFY") == "true",
+			Progress:        os.Stdout,
 		})
 
 		if err != nil {

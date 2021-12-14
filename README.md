@@ -2,22 +2,28 @@ Generate report, of Djobi®© pipeline runs.
 
 ## Requirement
 
-* GoLand
-* Docker
+* go
+* docker
 
 ## Usage
 
 ### Env. variables
 
-* ``PIPELINES_ROOT`` the path to Djobi®© pipelines folder
-* ``ELASTICSEARCH_URL`` default elasticsearch API URL
-* ``ELASTICSEARCH_FRONT_URL`` default elasticsearch front URL
+* ``TINTIN_PIPELINES_URLS`` URL to pipelines definitions (git)
+* ``TINTIN_PIPELINES_PATH`` relative path to pipelines definitions
+* ``HTML_TEMPLATE`` the HTML template to serve
+* ``METRICS_LOG_API_URL`` elasticsearch URL to get job details
+* ``FRONT_URLS_PATH`` YAML file with magic links
+* ``LOG_LEVEL``
 
 ### CLI
 
-    ./tintin
+```
+./tintin server
+```
 
 ## Project workflow
 
-* use git-flow tool
-* release as tag
+* https://pre-commit.com/
+* https://github.com/commitizen/cz-cli
+
