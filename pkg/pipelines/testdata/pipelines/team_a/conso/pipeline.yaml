@@ -1,0 +1,12 @@
+jobs:
+  conso:
+    contexts:
+      a:
+        label: a
+      b:
+        label: b
+    stages:
+      input:
+        type: input
+      output:
+        type: output

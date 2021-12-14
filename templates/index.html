@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Djobi Tintin - {{ .report.Title }}</title>
+    <style>
+        h1 {
+            margin: 5px;
+        }
+
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            text-align: left;
+            background-color: #f5f6fa;
+        }
+
+        .card {
+            background: white;
+            border-radius: 4px;
+            padding: 10px;
+            border: 1px solid #e5e9f2;
+            flex: 1 100%;
+            text-decoration: none;
+        }
+
+        @media all and (max-width: 600px) {
+            .card {
+                flex: 1 0 0;
+            }
+        }
+
+        .card h3 {
+            margin: 0;
+        }
+
+        .card small {
+            color: #aaa;
+        }
+    </style>
+    <style>
+        .table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1rem;
+            background-color: transparent;
+            border-collapse: collapse;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+            border-top: none;
+            padding: .75rem;
+        }
+
+        .table td, .table th {
+            padding: .5rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .bdg_status-job {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            border: 1px solid;
+            border-radius: 11px;
+        }
+
+        h6 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .small, small {
+            font-size: 80%;
+            font-weight: 400;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        ul li:before {
+            content: '\2022 \00a0'; //bullet unicode followed by 3 non breakable spaces
+        }
+
+    </style>
+</head>
+<body>
+
+<style>
+
+    .bdg {
+        font-weight: normal;
+        display: inline-block;
+        padding: .25em;
+        font-size: 75%;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+        vertical-align: baseline;
+    }
+
+    .tag {
+        font-weight: normal;
+        display: inline-block;
+        padding: .25em;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+        vertical-align: baseline;
+        background: blueviolet; /* pour Sampson */
+        color: white;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+
+    .bdg_success {
+        color: #fff;
+        background-color: #28a745;
+    }
+
+    .bdg_light {
+        background: white;
+        color: #666;
+    }
+
+    .bdg_warning {
+        color: #212529;
+        background-color: #ffc107;
+    }
+
+    .bdg_secondary {
+        color: #fff;
+        background-color: #6c757d;
+    }
+
+    .bdg_danger {
+        color: #fff;
+        background-color: #dc3545;
+    }
+
+    .bdg_success small {
+        color: #fff;
+    }
+
+    .bdg_warning small {
+        color: #212529;
+    }
+
+    .bdg_danger small {
+        color: #fff;
+    }
+</style>
+
+<h1>{{ .report.Title }} <small><a href="{{ report_url }}" target="_blank"
+                                  style="font-size: 0.7em">{{ report_url }}</a></small></h1>
+
+<table style="width: 100%; margin: auto; max-width: 1200px; table-layout: fixed;">
+    <tr>
+        <td style="width: 10%; max-width: 150px">
+            <div class="card" style="max-width: 150px">
+                <h3>{{ .report.Pipelines | len }}</h3>
+                <small>Pipelines</small>
+            </div>
+        </td>
+        <td style="width: 10%; max-width: 150px">
+            <div class="card" style="max-width: 150px">
+                <h3>{{ .Counters.Jobs }}</h3>
+                <small>Jobs</small>
+            </div>
+        </td>
+        <td style="width: 10%; max-width: 150px">
+            <div class="card" style="max-width: 150px">
+                <h3>{{ .Counters.Contexts }}</h3>
+                <small>Works</small>
+            </div>
+        </td>
+        <td style="width: 15%; max-width: 150px">
+            <div class="card" style="max-width: 150px">
+                <h3>{{ .Counters.Executions }} ({{ percentage .Counters.Executions .Counters.Contexts }})</h3>
+                <small>Executions</small>
+            </div>
+        </td>
+        <td style="width: 16%; max-width: 150px">
+            <a href="{{ link_to "status" "success" }}" style="text-decoration: none">
+            <div class="card bdg_success" style="max-width: 150px">
+                <h3>{{ .Counters.Success }} ({{ percentage .Counters.Success .Counters.Executions }})</h3>
+                <small>Success works</small>
+            </div>
+            </a>
+        </td>
+        <td style="width: 16%; max-width: 150px">
+            <a href="{{ link_to "status" "unknown" }}" style="text-decoration: none">
+            <div class="card bdg_warning" style="max-width: 150px">
+                <h3>{{ .Counters.Unknown }} ({{ percentage .Counters.Unknown .Counters.Executions }})</h3>
+                <small>Unknown works</small>
+            </div>
+            </a>
+        </td>
+        <td style="width: 16%; max-width: 150px">
+            <a href="{{ link_to "status" "error" }}" style="text-decoration: none">
+                <div class="card bdg_danger" style="max-width: 150px">
+                    <h3>{{ .Counters.Errors }} ({{ percentage .Counters.Errors .Counters.Executions }})</h3>
+                    <small>Error works</small>
+                </div>
+            </a>
+        </td>
+    </tr>
+</table>
+<br/>
+
+<div class="card">
+    Filters:
+
+    {{ if .report.Link.Arguments.Date }}
+    <span class="tag">
+        date: {{ .report.Link.Arguments.Date }}
+    </span>
+    {{ end }}
+
+    {{ if .report.Link.Arguments.Team }}
+        <a title="Remove filter" href="{{ link_to "team" "" }}" class="tag">
+            team: {{ .report.Link.Arguments.Team }}
+        </a>
+    {{ end }}
+
+    {{ if .report.Link.Arguments.Pipeline }}
+        <a title="Remove filter" href="{{ link_to "pipeline" "" }}" class="tag">
+            pipeline: {{ .report.Link.Arguments.Pipeline }}
+        </a>
+    {{ end }}
+
+    {{ if .report.Link.Arguments.Status }}
+        <a title="Remove filter" href="{{ link_to "status" "" }}" class="tag">
+            status: {{ .report.Link.Arguments.Status }}
+        </a>
+    {{ end }}
+</div>
+
+<br/>
+
+<div class="card">
+    <table class="table" style="width:100%" cellspacing="5px">
+        <thead>
+        <tr>
+            <th>Team</th>
+            <th>Pipeline</th>
+            <th>Job</th>
+            <th>Work</th>
+            {{ if .show_work_links }}<th></th>{{ end }}
+            <th>Details</th>
+            <th>Timeline</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{ range $pipeline := .report.Pipelines }}
+            {{ range $jobIndex, $job := $pipeline.Jobs }}
+                {{ range $workIndex, $work := $job.Works -}}
+                    <tr>
+                        {{ if and (eq $jobIndex 0) (eq $workIndex 0) }}
+                            <td style="padding: 10px;" {{ if gt $pipeline.Counters.Works 0 }}rowspan="{{ $pipeline.Counters.Works }}"{{ end }}>
+                                <a href="{{ link_to "team" $pipeline.Definition.Team }}" style="color: #212529; text-decoration: none;" title="Filter">{{ $pipeline.Definition.Team }}</a>
+                            </td>
+                            <td style="padding: 10px;" {{ if gt $pipeline.Counters.Works 0 }}rowspan="{{ $pipeline.Counters.Works }}"{{ end }}>
+                                <a href="{{ link_to "pipeline" $pipeline.Definition.Name }}"
+                                   style="display: block; text-decoration: none" title="Filter">
+                             <span class="bdg bdg_{{ $pipeline | pipeline_color }}"
+                                   style="display: block; border-radius: 4px; text-decoration: none">
+                                {{ $pipeline.Definition.Name }}
+                             </span>
+                                </a>
+                                <a href="{{ $pipeline.Definition.GitlabLink }}" style="font-size:12px;text-decoration: none" target="_blank">[source]</a>
+                            </td>
+                        {{ end }}
+                        {{ if eq $workIndex 0 }}
+                            <td style="padding: 10px;" rowspan="{{ $job.Works | len }}">
+                                <span class="bdg bdg_{{ $job | job_color }}"
+                                      style="display: block; border-radius: 4px;">{{ $job.Name }}</span>
+                            </td>
+                        {{ end }}
+                        <td style="padding: 10px;">
+                            {{ $color := "warning" }}
+                            {{ if $work.Success }}
+                                {{ $color = "success" }}
+                            {{ else if or (eq $work.Status "DONE_ERROR") }}
+                                {{ $color = "danger" }}
+                            {{ end }}
+                            <span class="bdg bdg_{{ $color }}"
+                                  style="display: block; border-radius: 4px;">{{ $work.Context.Name }}</span>
+                        </td>
+                        {{ if $.show_work_links }}
+                        <td style="padding: 5px" nowrap>
+                            {{ if gt ($work.LinkToJobLogs | len) 0 }}
+                                <a title="Job ES" href="{{ $work.LinkToJobLogs | html }}" style="font-size: 12px; text-decoration: none;" target="_blank">[job]</a>
+                                -&nbsp;
+                                <a title="Stages ES" href="{{ $work.LinkToJobStagesLogs }}" style="font-size: 12px; text-decoration: none;" target="_blank">[stages]</a>
+                                <br/>
+                                <a title="YARN history" href="{{ $work.LinkToYARNHistory }}" style="font-size: 12px; text-decoration: none;" target="_blank">[yarn]</a>
+                                -&nbsp;
+                                <a title="Spark history" href="{{ $work.LinkToSparkHistory }}" style="font-size: 12px; text-decoration: none;" target="_blank">[spark]</a>
+                            {{ end }}
+                        </td>
+                        {{ end }}
+                        <td style="padding: 10px;">
+                            {{ if gt ($work.Details | len) 0 }}{{ $work.Details }}{{ end }}
+                            <ul>
+                                {{ range $stageName, $stage := $work.Stages }}
+                                    <li>{{ $stageName }} = {{ if $stage.Resume.Link }}<a target="_blank"
+                                                                                         href="{{ $stage.Resume.Link | html }}">{{ end }}{{ $stage.Resume.Details | nl2br }}{{ if $stage.Resume.Link }}</a>{{ end }}
+                                    </li>
+                                {{ end }}
+                            </ul>
+                        </td>
+                        <td style="padding:5px;">
+                            {{ if gt $work.Timeline.Duration 0 }}
+                                {{ $work.Timeline.Duration | duration }}
+                                <br/>
+                                <small>{{ $work.Timeline.Start | date }} -> {{ $work.Timeline.End | time }}</small>
+                            {{ end }}
+                        </td>
+                    </tr>
+                {{- end }}
+            {{ end }}
+        {{ end }}
+        </tbody>
+    </table>
+    <hr style="border: 1px solid #C0C0C0"/>
+    <p style="text-align: center; color: grey">
+        https://github.com/datatok/tintin - dataTok Tintin version {{ .BuildInfo.Version }} ({{ .BuildInfo.GitCommit }}) - run on {{ .RuntimeVersion }}
+    </p>
+</div>
+</body>
+</html>

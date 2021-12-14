@@ -1,0 +1,7 @@
+jobs:
+  archivr:
+    stages:
+      input:
+        type: input
+      output:
+        type: output

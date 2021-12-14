@@ -1,0 +1,10 @@
+jobs:
+  archivr:
+    stages:
+      input:
+        type: input
+      output:
+        type: output
+      output_2:
+        enabled: false
+        type: output
