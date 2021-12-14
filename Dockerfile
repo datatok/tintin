@@ -6,8 +6,6 @@ ADD templates                   /opt/tintin/
 
 WORKDIR /opt/tintin
 
-RUN chmod +x /usr/local/bin/tintin
-
 EXPOSE 8080/tcp
 
 #HEALTHCHECK --interval=5m --timeout=3s \

@@ -101,6 +101,8 @@ jobs:
           name: dist
           path: _dist
 
+      - run: chmod +x /usr/local/bin/tintin
+
       -
         name: Build and push
         id: docker_build
