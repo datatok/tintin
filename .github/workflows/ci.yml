@@ -101,7 +101,7 @@ jobs:
           name: dist
           path: _dist
 
-      - run: chmod +x /usr/local/bin/tintin
+      - run: chmod +x ./_dist/linux-amd64/tintin
 
       -
         name: Build and push
